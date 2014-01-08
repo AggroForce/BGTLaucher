@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JButton;
 
 public class MainFrame extends JFrame implements ActionListener{
 
@@ -18,7 +19,14 @@ public class MainFrame extends JFrame implements ActionListener{
 		this.setSize(width, height);
 		this.setLocation((screen.width/2)-(width/2), (screen.height/2)-(height/2));
 		
+		JButton testButton = new JButton();
 		
+		testButton.setText("HI ENZO");
+		testButton.setSize(100, 50);
+		testButton.setVisible(true);
+		testButton.addActionListener(this);
+		
+		this.add(testButton);
 		
 		this.setVisible(true);
 	}
