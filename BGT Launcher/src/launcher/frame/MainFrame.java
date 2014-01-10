@@ -1,18 +1,28 @@
 package launcher.frame;
 
+
+
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+
 
 public class MainFrame extends JFrame implements ActionListener{
 
@@ -38,7 +48,7 @@ public class MainFrame extends JFrame implements ActionListener{
 		JButton Button1 = new JButton();
 		
 		Button1.setText("Hello Panel 1");
-		Button1.setBounds(200,200, 100, 50);
+		Button1.setBounds(300,150, 100, 50);
 		Button1.setVisible(true);
 		Button1.addActionListener(this);
 		
@@ -52,26 +62,44 @@ public class MainFrame extends JFrame implements ActionListener{
 	        
 	        JComponent panel1 = makeTextPanel("Panel #1");
 	        panel1.add(Button1);
-	        
-	        tabbedPane.addTab("Tab 1", icon, panel1,
-	                "Does nothing");
-	        
+	        tabbedPane.addTab("Tab 1", icon, panel1,"Does nothing");
 	        tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 	         
 	        JComponent panel2 = makeTextPanel("Panel #2");
-	        tabbedPane.addTab("Tab 2", icon, panel2,
-	                "Does twice as much nothing");
+	        tabbedPane.addTab("Tab 2", icon, panel2,"Does twice as much nothing");
 	        tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
+	        
+	        JComponent panel3 = makeTextPanel("Panel #3");
+	        tabbedPane.addTab("Tab 3", icon, panel3,"Does twice as much nothing");
+	        tabbedPane.setMnemonicAt(1, KeyEvent.VK_3);
 	         
 	         
-	        //Add the tabbed pane to this panel.
+	        //HTML browser
+	        JEditorPane jep = new JEditorPane();
+	        jep.setEditable(false);   
+
+	        try {
+	          jep.setPage("http://www.google.com");
+	        }catch (IOException e) {
+	          jep.setContentType("text/html");
+	          jep.setText("<html>Could not load</html>");
+	        } 
+
+	        JScrollPane sPane = new JScrollPane(jep);
+	        sPane.setSize(200,200);
+	        
+	        panel3.add(sPane);
+
 	      
 	         
 	        //The following line enables to use scrolling tabs.
 	        tabbedPane.setTabPlacement(JTabbedPane.TOP);
 	        tabbedPane.setSize(width, height-200);
 	        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		
+	      
+	        panel1.setLayout(null);
+	        panel2.setLayout(null);
+	        panel3.setLayout(null);
 	        tabbedPane.setVisible(true);
 	        
 		this.add(tabbedPane);
