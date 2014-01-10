@@ -1,7 +1,5 @@
 package launcher.frame;
 
-
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -38,6 +36,9 @@ public class MainFrame extends JFrame implements ActionListener{
 		
 		this.setLayout(null);
 		
+		
+		
+		this.setIconImage(new ImageIcon("knifeicon.ico").getImage());		
 		JButton testButton = new JButton();
 		
 		testButton.setText("HI ENZO");
@@ -57,7 +58,7 @@ public class MainFrame extends JFrame implements ActionListener{
 	       
 	        JTabbedPane tabbedPane = new JTabbedPane();
 	        
-	        ImageIcon icon = new ImageIcon("knifeicon.ico");         
+	        ImageIcon icon = new ImageIcon("knifeicon.ico");
 	        
 	        
 	        JComponent panel1 = makeTextPanel("Panel #1");
@@ -89,8 +90,6 @@ public class MainFrame extends JFrame implements ActionListener{
 	        sPane.setSize(800,400);
 	        
 	        panel3.add(sPane);
-
-	      
 	         
 	        //The following line enables to use scrolling tabs.
 	        tabbedPane.setTabPlacement(JTabbedPane.TOP);
