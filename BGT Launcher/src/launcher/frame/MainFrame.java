@@ -79,14 +79,14 @@ public class MainFrame extends JFrame implements ActionListener{
 	        jep.setEditable(false);   
 
 	        try {
-	          jep.setPage("http://www.google.com");
+	          jep.setPage("https://dl.dropboxusercontent.com/u/20064876/UpdateLog.html");
 	        }catch (IOException e) {
 	          jep.setContentType("text/html");
 	          jep.setText("<html>Could not load</html>");
 	        } 
 
 	        JScrollPane sPane = new JScrollPane(jep);
-	        sPane.setSize(200,200);
+	        sPane.setSize(800,400);
 	        
 	        panel3.add(sPane);
 
