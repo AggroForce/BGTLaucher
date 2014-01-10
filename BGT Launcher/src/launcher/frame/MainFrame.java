@@ -38,7 +38,6 @@ public class MainFrame extends JFrame implements ActionListener{
 		
 		//hello
 		
-		this.setIconImage(new ImageIcon("knifeicon.ico").getImage());		
 		JButton testButton = new JButton();
 		
 		testButton.setText("HI ENZO");
