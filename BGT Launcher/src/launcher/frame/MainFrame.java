@@ -6,8 +6,10 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -34,6 +36,11 @@ public class MainFrame extends JFrame implements ActionListener{
 		this.setResizable(false);
 		this.setSize(width, height);
 		this.setLocation((screen.width/2)-(width/2), (screen.height/2)-(height/2));
+		try {
+	        this.setIconImage(ImageIO.read(new File("src/Utility7.png")));
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 		
 		this.setLayout(null);
 		
