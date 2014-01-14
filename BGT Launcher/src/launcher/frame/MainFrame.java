@@ -6,7 +6,17 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -117,11 +127,35 @@ public class MainFrame extends JFrame implements ActionListener{
 		
 	}
 	
+	public void downloadData(){
+		URL down;
+		try {
+			down = new URL("https://dl.dropboxusercontent.com/shz/t47793ct0c7sx7t/EPR_ZffCgT/AggroForce%20textures%2016x16?token_hash=AAG_eyQnnhTzSUkiCBIxEFCFK7AHheK8VIBkTRT_D-z3Tw&top_level_offset=26");
+			URLConnection connection = down.openConnection();
+			InputStream br = connection.getInputStream();
+			File file = new File("textures.zip");
+			OutputStream fw = new FileOutputStream(file);
+		
+			int i;
+			while((i = br.read())!=-1){
+				fw.write(i);
+			}
+			br.close();
+			fw.close();
+			System.out.println("Downloading finished!");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == testButton){
 			System.out.println("you pressed testButton");
 			System.out.println("Now DOWNLOADING...");
+			this.downloadData();
 			
 		}
 		if(e.getSource() == Button1){
