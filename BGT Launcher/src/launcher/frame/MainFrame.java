@@ -52,7 +52,7 @@ public class MainFrame extends JFrame implements ActionListener{
 		
 		//set progress bar
 		bar.setName("Progress");
-		bar.setBounds(300, 150, 200, 30);
+		bar.setBounds(0, 550, 800, 30);
 		bar.setValue(0);
 		bar.setStringPainted(true);
 		
@@ -103,7 +103,7 @@ public class MainFrame extends JFrame implements ActionListener{
 	        
 	        //panel adding everything
 	        panel3.add(Button1); 
-	        panel2.add(bar);
+	        this.add(bar);
 	        
 	        panel1.setLayout(null);
 	        panel2.setLayout(null);
@@ -122,12 +122,11 @@ public class MainFrame extends JFrame implements ActionListener{
 		if(e.getSource() == testButton){
 			System.out.println("you pressed testButton");
 			System.out.println("Now DOWNLOADING...");
-			
+			download();
 		}
 		if(e.getSource() == Button1){
 			System.out.println("you pressed Button1");
 		}
-
 	}
 	
 
@@ -140,7 +139,21 @@ public class MainFrame extends JFrame implements ActionListener{
         return panel;
     }
     
-    //download file
     
+    //download file
+    private void download(){
+    	for(int i = 0; i<=100; i++){
+    		bar.setValue(i);
+    		this.update(this.getGraphics());
+    		try {
+				Thread.sleep(100L);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    	}
+    	
+    }
 
 }
