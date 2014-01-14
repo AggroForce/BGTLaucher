@@ -7,9 +7,16 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.awt.Color;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -26,6 +33,8 @@ public class MainFrame extends JFrame implements ActionListener{
 
 	public static final int width = 800;
 	public static final int height = 600;
+	JButton testButton = new JButton();
+	JButton Button1 = new JButton();
 	
 	public MainFrame(){
 		Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -38,17 +47,14 @@ public class MainFrame extends JFrame implements ActionListener{
 		
 		//hello
 		
-		JButton testButton = new JButton();
-		
-		testButton.setText("HI ENZO");
+		testButton.setText("Dowload");
 		testButton.setBounds(350,450, 100, 50);
 		testButton.setVisible(true);
 		testButton.addActionListener(this);
+
 		
-		JButton Button1 = new JButton();
-		
-		Button1.setText("Hello Panel 1");
-		Button1.setBounds(300,150, 100, 50);
+		Button1.setText("Get Information");
+		Button1.setBounds(300,150, 150, 50);
 		Button1.setVisible(true);
 		Button1.addActionListener(this);
 		
@@ -61,7 +67,6 @@ public class MainFrame extends JFrame implements ActionListener{
 	        
 	        
 	        JComponent panel1 = makeTextPanel("Panel #1");
-	        panel1.add(Button1);
 	        tabbedPane.addTab("Tab 1", icon, panel1,"Does nothing");
 	        tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 	         
@@ -71,9 +76,10 @@ public class MainFrame extends JFrame implements ActionListener{
 	        
 	        JComponent panel3 = makeTextPanel("Panel #3");
 	        tabbedPane.addTab("Tab 3", icon, panel3,"Does twice as much nothing");
-	        tabbedPane.setMnemonicAt(1, KeyEvent.VK_3);
-	         
-	         
+	        tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
+	        
+	        
+	        
 	        //HTML browser
 	        JEditorPane jep = new JEditorPane();
 	        jep.setEditable(false);   
@@ -88,13 +94,18 @@ public class MainFrame extends JFrame implements ActionListener{
 	        JScrollPane sPane = new JScrollPane(jep);
 	        sPane.setSize(800,400);
 	        
-	        panel3.add(sPane);
+	        panel1.add(sPane);
 	         
 	        //The following line enables to use scrolling tabs.
 	        tabbedPane.setTabPlacement(JTabbedPane.TOP);
 	        tabbedPane.setSize(width, height-200);
 	        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-	      
+	        
+	        
+	        
+	        //adding everything
+	        panel3.add(Button1); 
+	        
 	        panel1.setLayout(null);
 	        panel2.setLayout(null);
 	        panel3.setLayout(null);
@@ -103,13 +114,24 @@ public class MainFrame extends JFrame implements ActionListener{
 		this.add(tabbedPane);
 		this.add(testButton);
 		this.setVisible(true);
+		
+		
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Action: "+e.getActionCommand());
+		if(e.getSource() == testButton){
+			System.out.println("you pressed testButton");
+			System.out.println("Now DOWNLOADING...");
+			
+		}
+		if(e.getSource() == Button1){
+			System.out.println("you pressed Button1");
+		}
+
 	}
 	
+
     protected JComponent makeTextPanel(String text) {
         JPanel panel = new JPanel(false);
         JLabel filler = new JLabel(text);
@@ -118,6 +140,8 @@ public class MainFrame extends JFrame implements ActionListener{
         panel.add(filler);
         return panel;
     }
-	
+    
+    //download file
+    
 
 }
