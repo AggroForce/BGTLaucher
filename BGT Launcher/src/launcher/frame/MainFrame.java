@@ -3,20 +3,10 @@ package launcher.frame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
-import java.awt.Color;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -25,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
@@ -35,6 +26,7 @@ public class MainFrame extends JFrame implements ActionListener{
 	public static final int height = 600;
 	JButton testButton = new JButton();
 	JButton Button1 = new JButton();
+	JProgressBar bar = new JProgressBar(0,100);
 	
 	public MainFrame(){
 		Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -57,6 +49,12 @@ public class MainFrame extends JFrame implements ActionListener{
 		Button1.setBounds(300,150, 150, 50);
 		Button1.setVisible(true);
 		Button1.addActionListener(this);
+		
+		//set progress bar
+		bar.setName("Progress");
+		bar.setBounds(300, 150, 200, 30);
+		bar.setValue(0);
+		bar.setStringPainted(true);
 		
 		
 		//panels
@@ -103,8 +101,9 @@ public class MainFrame extends JFrame implements ActionListener{
 	        
 	        
 	        
-	        //adding everything
+	        //panel adding everything
 	        panel3.add(Button1); 
+	        panel2.add(bar);
 	        
 	        panel1.setLayout(null);
 	        panel2.setLayout(null);
