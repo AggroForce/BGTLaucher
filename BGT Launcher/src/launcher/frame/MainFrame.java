@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.Thread.State;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -32,7 +33,7 @@ import laucher.download.FileDownload;
 
 
 @SuppressWarnings("serial")
-public class MainFrame extends JFrame implements ActionListener, PropertyChangeListener{
+public class MainFrame extends JFrame implements ActionListener{
 
 	public static final int width = 800;
 	public static final int height = 600;
@@ -40,7 +41,13 @@ public class MainFrame extends JFrame implements ActionListener, PropertyChangeL
 	JButton Button1 = new JButton();
 	JProgressBar bar = new JProgressBar(0,100);
 	FileDownload fd;
+	private final String url = "http://hivelocity.dl.sourceforge.net/project/java-game-lib/Official%20Releases/LWJGL%202.9.1/lwjgl-2.9.1.zip";
+	private File file = new File("lwjgl.zip");
+	
+	public static MainFrame instance;
+	
 	public MainFrame(){
+		instance = this;
 		Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setResizable(false);
@@ -54,8 +61,7 @@ public class MainFrame extends JFrame implements ActionListener, PropertyChangeL
 		
 		this.setLayout(null);
 		
-		fd=new FileDownload("https://dl.dropboxusercontent.com/u/20064876/textures.zip", new File("textures.zip"));
-		fd.addPropertyChangeListener(this);
+		fd=this.getNewThread();
 		//hello
 		
 		testButton.setText("Dowload");
@@ -173,9 +179,16 @@ public class MainFrame extends JFrame implements ActionListener, PropertyChangeL
 		if(e.getSource() == testButton){
 			System.out.println("you pressed testButton");
 			System.out.println("Now DOWNLOADING...");
-			bar.setValue(0);
-			this.update(this.getGraphics());
-			fd.execute();
+			if(fd.getState()==State.NEW || fd.getState()==State.TERMINATED){
+				if(fd.getState()==State.TERMINATED){
+					fd = this.getNewThread();
+				}
+				bar.setValue(0);
+				this.update(this.getGraphics());
+				fd.start();
+			}else{
+				System.err.println("Cannot Download. Thread is still active!");
+			}
 		}
 		if(e.getSource() == Button1){
 			System.out.println("you pressed Button1");
@@ -193,10 +206,13 @@ public class MainFrame extends JFrame implements ActionListener, PropertyChangeL
         return panel;
     }
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		bar.setValue(fd.getProgress());
-		this.update(this.getGraphics());
+	public void updateProgress(int progress) {
+		bar.setValue(progress);
+		bar.update(bar.getGraphics());
+	}
+	
+	private FileDownload getNewThread(){
+		return new FileDownload(this.url,this.file);
 	}
 
 }

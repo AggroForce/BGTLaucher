@@ -10,11 +10,14 @@ import java.net.URLConnection;
 
 import javax.swing.SwingWorker;
 
-public class FileDownload extends SwingWorker{
+import launcher.frame.MainFrame;
+
+public class FileDownload extends Thread{
 	
 	private URL url;
 	private URLConnection netcon;
 	private File dest;
+	public int progress = 0;
 	
 	public FileDownload(String url,File dest){
 		this.dest = dest;
@@ -27,31 +30,37 @@ public class FileDownload extends SwingWorker{
 		}
 	}
 	
+	public void run(){
+		this.download();
+	}
+	
 	public long getLengthBytes(){
 		return netcon.getContentLengthLong();
 	}
 	
-	@Override
-	protected Object doInBackground() throws Exception {
+	public void download(){
 		System.out.println("File download started...");
 		try{
 			InputStream in = netcon.getInputStream();
 			OutputStream out = new FileOutputStream(dest);
+			int lastprogress = 0;
 			long prog = 0;
 			long size = this.getLengthBytes();
 			int i;
 			while((i = in.read())!=-1){
 				out.write(i);
-				prog++;
-				Thread.sleep(1);
-				this.setProgress((int)((double)prog/(double)size)*100);
+				prog += 1;
+				progress = (int)(((double)prog/(double)size)*100d);
+				if(lastprogress != progress){
+					lastprogress = progress;
+					MainFrame.instance.updateProgress(this.progress);
+				}
 			}
 			in.close();
 			out.close();
-		}catch(IOException e){
+		}catch(Exception e){
 			e.printStackTrace();
 		}
 		System.out.println("File download finished...");
-		return null;
 	}
 }
