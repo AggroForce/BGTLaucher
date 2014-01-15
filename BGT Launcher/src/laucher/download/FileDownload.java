@@ -8,12 +8,9 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import javax.swing.SwingWorker;
-
-import launcher.frame.MainFrame;
-
 public class FileDownload extends Thread{
-	
+
+	private IProgressCallback callback = null;
 	private URL url;
 	private URLConnection netcon;
 	private File dest;
@@ -38,6 +35,11 @@ public class FileDownload extends Thread{
 		return netcon.getContentLengthLong();
 	}
 	
+	public FileDownload setProgressCallback(IProgressCallback callback){
+		this.callback = callback;
+		return this;
+	}
+	
 	public void download(){
 		System.out.println("File download started...");
 		try{
@@ -53,7 +55,9 @@ public class FileDownload extends Thread{
 				progress = (int)(((double)prog/(double)size)*100d);
 				if(lastprogress != progress){
 					lastprogress = progress;
-					MainFrame.instance.updateProgress(this.progress);
+					if(this.callback != null){
+						callback.progressUpdated(this.progress);
+					}
 				}
 			}
 			in.close();

@@ -13,7 +13,7 @@ public class MainStart{
 				| IllegalAccessException | UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		MainFrame frame = new MainFrame();
+		new MainFrame();
 	}
 
 }
