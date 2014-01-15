@@ -1,28 +1,24 @@
 package launcher.frame;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -30,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 
+@SuppressWarnings("serial")
 public class MainFrame extends JFrame implements ActionListener{
 
 	public static final int width = 800;
@@ -44,6 +41,11 @@ public class MainFrame extends JFrame implements ActionListener{
 		this.setResizable(false);
 		this.setSize(width, height);
 		this.setLocation((screen.width/2)-(width/2), (screen.height/2)-(height/2));
+		try {
+	        this.setIconImage(ImageIO.read(new File("src/Utility7.png")));
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 		
 		this.setLayout(null);
 		
@@ -62,7 +64,7 @@ public class MainFrame extends JFrame implements ActionListener{
 		
 		//set progress bar
 		bar.setName("Progress");
-		bar.setBounds(300, 150, 200, 30);
+		bar.setBounds(0, 550, 800, 30);
 		bar.setValue(0);
 		bar.setStringPainted(true);
 		
@@ -113,7 +115,7 @@ public class MainFrame extends JFrame implements ActionListener{
 	        
 	        //panel adding everything
 	        panel3.add(Button1); 
-	        panel2.add(bar);
+	        this.add(bar);
 	        
 	        panel1.setLayout(null);
 	        panel2.setLayout(null);
@@ -136,9 +138,18 @@ public class MainFrame extends JFrame implements ActionListener{
 			File file = new File("textures.zip");
 			OutputStream fw = new FileOutputStream(file);
 		
+			long size = connection.getContentLengthLong();
 			int i;
+			int progress=0;
 			while((i = br.read())!=-1){
 				fw.write(i);
+				progress++;
+				if(size!=-1){
+					bar.setValue((int)((progress/(double)size)*100));
+					this.update(this.getGraphics());
+				}else{
+					System.err.println("Could not get length!");
+				}
 			}
 			br.close();
 			fw.close();
@@ -156,12 +167,10 @@ public class MainFrame extends JFrame implements ActionListener{
 			System.out.println("you pressed testButton");
 			System.out.println("Now DOWNLOADING...");
 			this.downloadData();
-			
 		}
 		if(e.getSource() == Button1){
 			System.out.println("you pressed Button1");
 		}
-
 	}
 	
 
@@ -174,7 +183,21 @@ public class MainFrame extends JFrame implements ActionListener{
         return panel;
     }
     
-    //download file
     
+    //download file
+    private void download(){
+    	for(int i = 0; i<=100; i++){
+    		bar.setValue(i);
+    		this.update(this.getGraphics());
+    		try {
+				Thread.sleep(100L);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    	}
+    	
+    }
 
 }
