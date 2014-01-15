@@ -5,11 +5,14 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -25,16 +28,18 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import laucher.download.FileDownload;
+
 
 @SuppressWarnings("serial")
-public class MainFrame extends JFrame implements ActionListener{
+public class MainFrame extends JFrame implements ActionListener, PropertyChangeListener{
 
 	public static final int width = 800;
 	public static final int height = 600;
 	JButton testButton = new JButton();
 	JButton Button1 = new JButton();
 	JProgressBar bar = new JProgressBar(0,100);
-	
+	FileDownload fd;
 	public MainFrame(){
 		Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -49,6 +54,8 @@ public class MainFrame extends JFrame implements ActionListener{
 		
 		this.setLayout(null);
 		
+		fd=new FileDownload("https://dl.dropboxusercontent.com/u/20064876/textures.zip", new File("textures.zip"));
+		fd.addPropertyChangeListener(this);
 		//hello
 		
 		testButton.setText("Dowload");
@@ -132,24 +139,25 @@ public class MainFrame extends JFrame implements ActionListener{
 	public void downloadData(){
 		URL down;
 		try {
-			down = new URL("https://dl.dropboxusercontent.com/shz/t47793ct0c7sx7t/EPR_ZffCgT/AggroForce%20textures%2016x16?token_hash=AAG_eyQnnhTzSUkiCBIxEFCFK7AHheK8VIBkTRT_D-z3Tw&top_level_offset=26");
+			down = new URL("https://dl.dropboxusercontent.com/u/20064876/textures.zip");
 			URLConnection connection = down.openConnection();
+			connection.connect();
 			InputStream br = connection.getInputStream();
 			File file = new File("textures.zip");
 			OutputStream fw = new FileOutputStream(file);
 		
 			long size = connection.getContentLengthLong();
 			int i;
-			int progress=0;
+			long progress = 0;
 			while((i = br.read())!=-1){
 				fw.write(i);
 				progress++;
 				if(size!=-1){
-					bar.setValue((int)((progress/(double)size)*100));
-					this.update(this.getGraphics());
-				}else{
-					System.err.println("Could not get length!");
+					bar.setValue((int)(((double)progress/size)*100));
 				}
+			}
+			if(size==-1){
+				System.err.println("Could not get remote file length!");
 			}
 			br.close();
 			fw.close();
@@ -160,16 +168,18 @@ public class MainFrame extends JFrame implements ActionListener{
 		
 	}
 	
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == testButton){
 			System.out.println("you pressed testButton");
 			System.out.println("Now DOWNLOADING...");
-			this.downloadData();
+			bar.setValue(0);
+			this.update(this.getGraphics());
+			fd.execute();
 		}
 		if(e.getSource() == Button1){
 			System.out.println("you pressed Button1");
+			System.out.println("Length: "+fd.getLengthBytes());
 		}
 	}
 	
@@ -182,22 +192,11 @@ public class MainFrame extends JFrame implements ActionListener{
         panel.add(filler);
         return panel;
     }
-    
-    
-    //download file
-    private void download(){
-    	for(int i = 0; i<=100; i++){
-    		bar.setValue(i);
-    		this.update(this.getGraphics());
-    		try {
-				Thread.sleep(100L);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    		
-    	}
-    	
-    }
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		bar.setValue(fd.getProgress());
+		this.update(this.getGraphics());
+	}
 
 }
