@@ -1,8 +1,7 @@
 package launcher.frame;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -16,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -43,6 +41,7 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 	public MainFrame(){
 		instance = this;
 		Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		this.setTitle("SubRoute Launcher");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setResizable(false);
 		this.setSize(width, height);
@@ -64,16 +63,17 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 		testButton.addActionListener(this);
 
 		
-		Button1.setText("Get Information");
+		Button1.setText("The Button that does the stuff");
 		Button1.setBounds(300,150, 150, 50);
 		Button1.setVisible(true);
 		Button1.addActionListener(this);
 		
 		//set progress bar
-		bar.setName("Progress");
-		bar.setBounds(0, 550, 800, 30);
-		bar.setValue(0);
 		bar.setStringPainted(true);
+		bar.setName("Progress");
+		bar.setBounds(5, 540, 785, 30);
+		bar.setValue(0);
+		bar.setForeground(Color.GREEN);
 		
 		
 		//panels
@@ -173,7 +173,7 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 	@Override
 	public void progressUpdated(int progress) {
 		bar.setValue(progress);
-		bar.update(bar.getGraphics());
+		bar.paint(bar.getGraphics());
 	}
 
 }
