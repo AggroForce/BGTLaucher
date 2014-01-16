@@ -73,7 +73,7 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 		bar.setName("Progress");
 		bar.setBounds(5, 540, 785, 30);
 		bar.setValue(0);
-		bar.setForeground(Color.WHITE);
+		bar.setForeground(Color.GREEN);
 		
 		
 		//panels
