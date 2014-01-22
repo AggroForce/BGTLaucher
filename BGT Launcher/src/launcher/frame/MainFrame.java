@@ -20,8 +20,9 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import laucher.download.FileDownload;
-import laucher.download.IProgressCallback;
+import launcher.download.FileDownload;
+import launcher.download.IProgressCallback;
+import launcher.event.EventHandler;
 
 
 @SuppressWarnings("serial")
@@ -34,7 +35,7 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 	JProgressBar bar = new JProgressBar(0,100);
 	FileDownload fd;
 	private final String url = "https://dl.dropboxusercontent.com/u/20064876/zip.zip";
-	private File file = new File("game.jar");
+	private File file = new File("game.zip");
 	
 	public static MainFrame instance;
 	
@@ -57,10 +58,11 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 		fd=this.getNewThread();
 		//hello
 		
-		testButton.setText("Dowload");
+		testButton.setText("Download");
 		testButton.setBounds(350,450, 100, 50);
 		testButton.setVisible(true);
-		testButton.addActionListener(this);
+//		testButton.addActionListener(this);
+		testButton.addActionListener(EventHandler.getEventBus());
 
 		
 		Button1.setText("The Button that does the stuff");
