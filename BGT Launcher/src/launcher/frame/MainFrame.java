@@ -1,6 +1,5 @@
 package launcher.frame;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,8 +32,8 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 	JButton Button1 = new JButton();
 	JProgressBar bar = new JProgressBar(0,100);
 	FileDownload fd;
-	private final String url = "https://dl.dropboxusercontent.com/u/20064876/textures.zip";
-	private File file = new File("lwjgl.zip");
+	private final String url = "https://codeload.github.com/AggroForce/SubRoute_Engine/zip/master";
+	private File file = new File("game.jar");
 	
 	public static MainFrame instance;
 	
@@ -69,18 +68,15 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 		Button1.addActionListener(this);
 		
 		//set progress bar
-		bar.setStringPainted(true);
-		bar.setName("Progress");
+//		bar.setStringPainted(true);
+//		bar.setName("Progress");
 		bar.setBounds(5, 540, 785, 30);
 		bar.setValue(0);
-//		bar.setForeground(Color.GREEN);
+//		bar.setForeground(Color.CYAN);
 		
 		
 		//panels
-	       
 	        JTabbedPane tabbedPane = new JTabbedPane();
-	        
-	        ImageIcon icon = new ImageIcon("knifeicon.ico");
 	        
 	        
 	        JComponent panel1 = makeTextPanel("Panel #1");
