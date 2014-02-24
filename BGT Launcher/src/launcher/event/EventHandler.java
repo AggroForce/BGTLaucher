@@ -3,6 +3,8 @@ package launcher.event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import launcher.frame.MainFrame;
+
 public class EventHandler implements ActionListener{
 
 	private static final EventHandler evth = new EventHandler();
