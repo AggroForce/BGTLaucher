@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -16,54 +18,67 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import launcher.download.FileDownload;
 import launcher.download.IProgressCallback;
 import launcher.event.EventHandler;
+import launcher.file.FileOperations;
+import launcher.zip.IUnzipCallback;
 
 
 @SuppressWarnings("serial")
-public class MainFrame extends JFrame implements ActionListener,IProgressCallback{
+public class MainFrame extends JFrame implements ActionListener,IProgressCallback,IUnzipCallback{
 
 	public static final int width = 800;
 	public static final int height = 600;
-	JButton testButton = new JButton();
+	JButton dlBtn = new JButton();
 	JButton dlLocBtn = new JButton();
 	JButton gameLocBtn = new JButton();
+	JButton startBtn = new JButton();
 	JProgressBar bar = new JProgressBar(0,100);
+	JLabel plbl = new JLabel();
 	JTextField dlLoc = new JTextField();
 	JTextField gameloc = new JTextField();
-	FileDownload fd;
-	private final String url = "https://dl.dropboxusercontent.com/u/20064876/zip.zip";
-	private File file = new File("game.zip");
+	public String dldir = System.getProperty("user.home")+File.separator+"Downloads"+File.separator;
+	public String gamedir = (new File("")).getAbsolutePath()+File.separator+"Subroute"+File.separator;
+	private final String url = "https://dl.dropboxusercontent.com/u/20064876/game.zip";
+	public final File file = new File(dldir,"game.zip");
+	public final FileDownload fd = new FileDownload(this.url,this.file).setProgressCallback(this);
 	
 	public static MainFrame instance;
 	
 	public MainFrame(){
 		instance = this;
+		new FileOperations().start();
 		Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		this.setTitle("SubRoute Launcher");
 		this.setResizable(false);
 		this.setSize(width, height);
 		this.setLocation((screen.width/2)-(width/2), (screen.height/2)-(height/2));
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {
 	        this.setIconImage(ImageIO.read(new File("src/Utility7.png")));
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
 		
-		
-		fd=this.getNewThread();
-		
-		testButton.setText("Download");
+		dlBtn.setText("Download");
 //		testButton.setSize(100, 50);
-		testButton.setVisible(true);
-		testButton.addActionListener(EventHandler.getEventBus());
+		dlBtn.setVisible(true);
+		dlBtn.addActionListener(EventHandler.getEventBus());
+		
+		startBtn.setText("Start Game");
+		startBtn.setVisible(true);
+		startBtn.setActionCommand("startgame");
+		startBtn.addActionListener(EventHandler.getEventBus());
 		
 		dlLocBtn.setText("Set");
 		dlLocBtn.setPreferredSize(new Dimension(150, 50));
@@ -77,24 +92,25 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 		gameLocBtn.addActionListener(EventHandler.getEventBus());
 		gameLocBtn.setActionCommand("gameLoc");
 		
-		dlLoc.setText(System.getProperty("user.home")+File.separator+"Downloads"+File.separator);
+		dlLoc.setText(dldir);
 		dlLoc.setMaximumSize(new Dimension(300,20));
 		dlLoc.setVisible(true);
 		dlLoc.setEditable(false);
 		dlLoc.addActionListener(EventHandler.getEventBus());
 		
-		gameloc.setText((new File("")).getAbsolutePath()+File.separator+"Subroute"+File.separator);
+		gameloc.setText(gamedir);
 		gameloc.setMaximumSize(new Dimension(300,20));
 		gameloc.setVisible(true);
 		gameloc.setEditable(false);
 		gameloc.addActionListener(EventHandler.getEventBus());
 		
-		//set progress bar
-		bar.setStringPainted(true);
-		bar.setName("Progress");
-		bar.setSize(785, 30);
+		plbl.setText("0%");
+		plbl.setHorizontalTextPosition(JLabel.CENTER);
+		plbl.setHorizontalAlignment(JLabel.CENTER);
+		bar.setLayout(new BorderLayout());
 		bar.setValue(0);
-		
+		bar.setPreferredSize(new Dimension(700,50));
+		bar.add(plbl,BorderLayout.CENTER);
 		
 		//panels
 	        JTabbedPane tabs = new JTabbedPane();
@@ -172,11 +188,24 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 	        			)
 	        		);
 	        
-	    BorderLayout layt = new BorderLayout();
-		this.setLayout(layt);
-		this.add(tabs, BorderLayout.NORTH);
-		this.add(testButton, BorderLayout.CENTER);
-		this.add(bar, BorderLayout.SOUTH);
+	    GroupLayout layt = new GroupLayout(this.getContentPane());
+		this.getContentPane().setLayout(layt);
+		layt.setHorizontalGroup(
+				layt.createParallelGroup(Alignment.CENTER)
+					.addComponent(tabs)
+					.addComponent(dlBtn)
+					.addComponent(startBtn,Alignment.TRAILING)
+					.addComponent(bar)
+		);
+		layt.setVerticalGroup(
+				layt.createSequentialGroup()
+					.addComponent(tabs).addGap(10)
+					.addGroup(layt.createParallelGroup()
+						.addComponent(dlBtn)
+						.addComponent(startBtn)
+					).addGap(5)
+					.addComponent(bar).addGap(5)
+		);
 
 		tabs.setVisible(true);
 		
@@ -185,19 +214,10 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == testButton){
+		if(e.getSource() == dlBtn){
 			System.out.println("you pressed testButton");
 			System.out.println("Now DOWNLOADING...");
-			if(fd.getState()==State.NEW || fd.getState()==State.TERMINATED){
-				if(fd.getState()==State.TERMINATED){
-					fd = this.getNewThread();
-				}
-				bar.setValue(0);
-				this.update(this.getGraphics());
-				fd.start();
-			}else{
-				System.err.println("Cannot Download. Thread is still active!");
-			}
+			
 		}
 		if(e.getSource() == dlLocBtn){
 			System.out.println("you pressed Button1");
@@ -209,14 +229,18 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
         JPanel panel = new JPanel();
         return panel;
     }
-    
-	private FileDownload getNewThread(){
-		return new FileDownload(this.url,this.file).setProgressCallback(this);
-	}
 
 	@Override
 	public void progressUpdated(int progress) {
 		bar.setValue(progress);
+		plbl.setText(progress+"%");
+		bar.paint(bar.getGraphics());
+	}
+
+	@Override
+	public void progressUpdated(int i, String filename) {
+		bar.setValue(i);
+		plbl.setText(i+"%:"+filename);
 		bar.paint(bar.getGraphics());
 	}
 
