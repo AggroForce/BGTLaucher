@@ -9,7 +9,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.ZipOutputStream;
 
-public class FileDownload extends Thread{
+import launcher.file.IFileTask;
+
+public class FileDownload implements IFileTask{
 
 	private IProgressCallback callback = null;
 	private URL url;
@@ -28,10 +30,6 @@ public class FileDownload extends Thread{
 		}
 	}
 	
-	public void run(){
-		this.download();
-	}
-	
 	public long getLengthBytes(){
 		return netcon.getContentLengthLong();
 	}
@@ -41,7 +39,7 @@ public class FileDownload extends Thread{
 		return this;
 	}
 	
-	public void download(){
+	public void executeTask(){
 		System.out.println("File download started...");
 		try{
 			InputStream in = netcon.getInputStream();
