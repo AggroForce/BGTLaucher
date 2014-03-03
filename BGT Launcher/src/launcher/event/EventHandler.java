@@ -21,7 +21,7 @@ public class EventHandler implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		System.out.println(arg0);
+//		System.out.println(arg0);
 		if(arg0.getActionCommand().equalsIgnoreCase("download")){
 			FileOperations.addTaskToQueue(MainFrame.instance.fd);
 			FileOperations.addTaskToQueue(new Unzip(MainFrame.instance.file,MainFrame.instance.gamedir).setUnzipCallback(MainFrame.instance));
