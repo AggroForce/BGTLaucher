@@ -11,11 +11,12 @@ public class GameLaunch {
 	public static void launchGame(){
 		ProcessBuilder pb = new ProcessBuilder();
 		pb.directory(new File(MainFrame.instance.gamedir));
-		pb.command("javaw","-jar","game.jar");
+		pb.command("javaw","-jar","game.jar","-console_enable");
 		try {
-			pb.start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			pb.inheritIO();
+			pb.start();					
+		} catch (Exception e) {
+ 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
