@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.State;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -43,6 +44,7 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 	JButton dlLocBtn = new JButton();
 	JButton gameLocBtn = new JButton();
 	JButton startBtn = new JButton();
+    JEditorPane jep = new JEditorPane();
 	JProgressBar bar = new JProgressBar(0,100);
 	JLabel plbl = new JLabel();
 	JTextField dlLoc = new JTextField();
@@ -139,19 +141,7 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 	        tabs.addTab("Settings", null, panel3,"Some pre-load game settings");
 	        tabs.setMnemonicAt(2, KeyEvent.VK_3);
 	        
-	        
-	        
-	        
-	        //HTML browser
-	        JEditorPane jep = new JEditorPane();
-	        jep.setEditable(false);   
-
-	        try {
-	          jep.setPage("https://dl.dropboxusercontent.com/u/20064876/UpdateLog.html");
-	        }catch (IOException e) {
-	          jep.setContentType("text/html");
-	          jep.setText("<html>Could not load</html>");
-	        } 
+	        jep.setEditable(false);    
 
 	        JScrollPane sPane = new JScrollPane(jep);
 	        sPane.setSize(800,400);
@@ -210,6 +200,7 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 		tabs.setVisible(true);
 		
 		this.setVisible(true);
+		this.loadWebPages(); 
 	}
 	
 	@Override
@@ -224,6 +215,14 @@ public class MainFrame extends JFrame implements ActionListener,IProgressCallbac
 		}
 	}
 	
+	protected void loadWebPages(){
+        try {
+	        jep.setPage("https://dl.dropboxusercontent.com/u/20064876/UpdateLog.html");
+	    }catch (IOException e) {
+	        jep.setContentType("text/html");
+	        jep.setText("<html>Could not load</html>");
+	    }
+	}
 
     protected JComponent makeTextPanel(String text) {
         JPanel panel = new JPanel();

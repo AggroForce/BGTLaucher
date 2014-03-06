@@ -4,9 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -17,7 +16,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 public class DebugConsole extends JFrame implements ActionListener {
-
+	
+	private static final long serialVersionUID = 1095474827443662611L;
 	private Process game;
 	private static DebugConsole instance;
 	private StyledDocument con;
@@ -25,24 +25,21 @@ public class DebugConsole extends JFrame implements ActionListener {
 	private JScrollPane spane = new JScrollPane(ta);
 	private JTextField tf = new JTextField();
 	
-	public DebugConsole(Process newGame){
-		if(true){
-			if(instance!=null){
-				instance.dispose();
-			}
-			instance = this;
-			game = newGame;
+	public DebugConsole(Process newGame) throws IOException{
+		if(instance!=null){
+			instance.dispose();
+		}
+		instance = this;
+		game = newGame;
 //			in = game.getInputStream();
 //			out = game.getOutputStream();
 //			err = game.getErrorStream();
-			this.con = ta.getStyledDocument();
-		}else{
-			throw new IllegalStateException("Debug Console already running!");
-		}
+		this.con = ta.getStyledDocument();
 		this.setMinimumSize(new Dimension(800,600));
 		this.setResizable(true);
 		GroupLayout layt = new GroupLayout(this.getContentPane());
 		this.getContentPane().setLayout(layt);
+		this.ta.setAutoscrolls(true);
 		ta.setEditable(false);
 		ta.setVisible(true);
 		
@@ -62,8 +59,8 @@ public class DebugConsole extends JFrame implements ActionListener {
 				.addComponent(spane)
 				.addComponent(tf, 20, 20, 20)
 		);
-		
 		this.setVisible(true);
+		new ProcessReader(game);
 	}
 
 	@Override
@@ -84,8 +81,27 @@ public class DebugConsole extends JFrame implements ActionListener {
 	
 	private class ProcessReader extends Thread{
 		
+		public InputStream in, err;
+		
 		public ProcessReader(Process p){
-			
+			in = p.getInputStream();
+			err = p.getErrorStream();
+			this.start();
+		}
+		
+		public void run(){
+			while(true){
+				try{
+				if(in.available()>0){
+					append((char)in.read()+"", "None");
+				}
+				if(err.available()>0){
+					append((char)err.read()+"","Error");
+				}
+				}catch(IOException e){
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }
